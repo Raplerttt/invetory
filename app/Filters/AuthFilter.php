@@ -10,20 +10,29 @@ class AuthFilter implements FilterInterface
 {
     public function before(RequestInterface $request, $arguments = null)
     {
-        $session = \Config\Services::session();
-        
-        // Check if user is logged in
-        if (!$session->get('logged_in')) {
-            // Save the intended URL for redirect after login
-            $session->set('redirect_url', current_url());
-            
-            return redirect()->to('/login')
-                ->with('error', 'Silakan login terlebih dahulu untuk mengakses halaman tersebut.');
+        // Cek apakah user sudah login
+        if (!session()->get('isLoggedIn')) {
+            session()->setFlashdata('error', 'Silakan login terlebih dahulu!');
+            return redirect()->to('/login');
         }
+
+        // Cek role-based access jika ada arguments
+        if (!empty($arguments)) {
+            $userRole = session()->get('role');
+            
+            // Jika user role tidak ada dalam arguments yang diizinkan
+            if (!in_array($userRole, $arguments)) {
+                session()->setFlashdata('error', 'Anda tidak memiliki akses ke halaman ini!');
+                return redirect()->to('/dashboard');
+            }
+        }
+
+        return $request;
     }
 
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
     {
         // Do something here if needed
+        return $response;
     }
 }

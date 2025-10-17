@@ -20,7 +20,9 @@ use App\Controllers\TestConnection;
 // Public Routes
 $routes->get('/', 'Auth::login');
 $routes->get('/login', 'Auth::login');
-$routes->post('/login', 'Auth::login');
+$routes->post('/login', 'Auth::attemptLogin');
+$routes->get('/register', 'Auth::register');
+$routes->post('/register', 'Auth::attemptRegister');
 $routes->get('/logout', 'Auth::logout');
 
 // Test Routes (bisa dihapus di production)
@@ -34,7 +36,7 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     $routes->get('/dashboard', 'Dashboard::index');
     $routes->get('/dashboard/profile', 'Dashboard::profile');
     $routes->post('/dashboard/update-profile', 'Dashboard::updateProfile');
-    $routes->get('/dashboard/get-stats', 'Dashboard::getDashboardStats');
+    $routes->get('/dashboard/get-stats', 'Dashboard::getDashboardStatsApi');
     
     // Master Data - Items
     $routes->group('items', function($routes) {
@@ -45,7 +47,7 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
         $routes->post('update/(:num)', 'Items::update/$1');
         $routes->get('delete/(:num)', 'Items::delete/$1');
         $routes->get('view/(:num)', 'Items::view/$1');
-        $routes->get('get-stock/(:num)', 'Items::getStock/$1'); // API untuk cek stok
+        $routes->get('get-stock/(:num)', 'Items::getStock/$1');
     });
     
     // Master Data - Suppliers
@@ -80,7 +82,9 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
         $routes->post('update/(:num)', 'PurchaseOrders::update/$1');
         $routes->get('print/(:num)', 'PurchaseOrders::print/$1');
         
-        // Approval routes - dengan filter role admin
+        $routes->get('test-create', 'PurchaseOrders::testCreate');
+        $routes->get('simple-store', 'PurchaseOrders::simpleStore');
+        // Approval routes - hanya untuk admin
         $routes->group('', ['filter' => 'role:admin'], function($routes) {
             $routes->post('approve/(:num)', 'PurchaseOrders::approve/$1');
             $routes->post('reject/(:num)', 'PurchaseOrders::reject/$1');
@@ -93,12 +97,12 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     // Goods Receipt Notes
     $routes->group('goods-receipts', function($routes) {
         $routes->get('/', 'GoodsReceipts::index');
-        $routes->get('create/(:num)', 'GoodsReceipts::create/$1'); // dari PO
+        $routes->get('create/(:num)', 'GoodsReceipts::create/$1');
         $routes->post('store', 'GoodsReceipts::store');
         $routes->get('view/(:num)', 'GoodsReceipts::view/$1');
         $routes->get('print/(:num)', 'GoodsReceipts::print/$1');
         
-        // Approval routes
+        // Approval routes - hanya untuk admin
         $routes->group('', ['filter' => 'role:admin'], function($routes) {
             $routes->post('approve/(:num)', 'GoodsReceipts::approve/$1');
             $routes->post('reject/(:num)', 'GoodsReceipts::reject/$1');
@@ -115,7 +119,7 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
         $routes->post('update/(:num)', 'SalesOrders::update/$1');
         $routes->get('print/(:num)', 'SalesOrders::print/$1');
         
-        // Approval routes
+        // Approval routes - hanya untuk admin
         $routes->group('', ['filter' => 'role:admin'], function($routes) {
             $routes->post('approve/(:num)', 'SalesOrders::approve/$1');
             $routes->post('reject/(:num)', 'SalesOrders::reject/$1');
@@ -125,12 +129,12 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     // Deliveries
     $routes->group('deliveries', function($routes) {
         $routes->get('/', 'Deliveries::index');
-        $routes->get('create/(:num)', 'Deliveries::create/$1'); // dari SO
+        $routes->get('create/(:num)', 'Deliveries::create/$1');
         $routes->post('store', 'Deliveries::store');
         $routes->get('view/(:num)', 'Deliveries::view/$1');
         $routes->get('print/(:num)', 'Deliveries::print/$1');
         
-        // Approval routes
+        // Approval routes - hanya untuk admin
         $routes->group('', ['filter' => 'role:admin'], function($routes) {
             $routes->post('approve/(:num)', 'Deliveries::approve/$1');
             $routes->post('reject/(:num)', 'Deliveries::reject/$1');
@@ -172,6 +176,3 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
 $routes->set404Override(function() {
     return view('errors/404');
 });
-
-// Maintenance mode (optional)
-// $routes->setAutoRoute(false);

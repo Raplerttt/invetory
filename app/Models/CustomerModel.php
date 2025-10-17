@@ -4,9 +4,9 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class SupplierModel extends Model
+class CustomerModel extends Model
 {
-    protected $table = 'suppliers';
+    protected $table = 'customers';
     protected $primaryKey = 'id';
     protected $allowedFields = [
         'code', 'name', 'address', 'phone', 'email', 
@@ -20,36 +20,36 @@ class SupplierModel extends Model
 
     protected $validationRules = [
         'name' => 'required|min_length[3]|max_length[200]',
-        'code' => 'required|min_length[3]|max_length[50]|is_unique[suppliers.code]',
+        'code' => 'required|min_length[3]|max_length[50]|is_unique[customers.code]',
         'email' => 'permit_empty|valid_email'
     ];
 
     protected $validationMessages = [
         'code' => [
-            'is_unique' => 'Kode supplier sudah digunakan.'
+            'is_unique' => 'Kode customer sudah digunakan.'
         ]
     ];
 
-    // Get active suppliers for dropdown
-    public function getActiveSuppliers()
+    // Get active customers for dropdown
+    public function getActiveCustomers()
     {
         return $this->where('is_active', true)
                    ->orderBy('name', 'ASC')
                    ->findAll();
     }
 
-    public function getSuppliersForDropdown()
+    public function getCustomersForDropdown()
     {
-        $suppliers = $this->getActiveSuppliers();
+        $customers = $this->getActiveCustomers();
         $dropdown = [];
-        foreach ($suppliers as $supplier) {
-            $dropdown[$supplier['id']] = $supplier['name'] . ' (' . $supplier['code'] . ')';
+        foreach ($customers as $customer) {
+            $dropdown[$customer['id']] = $customer['name'] . ' (' . $customer['code'] . ')';
         }
         return $dropdown;
     }
 
-    // Count active suppliers
-    public function countActiveSuppliers()
+    // Count active customers
+    public function countActiveCustomers()
     {
         return $this->where('is_active', true)->countAllResults();
     }

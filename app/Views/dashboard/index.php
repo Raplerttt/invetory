@@ -1,368 +1,390 @@
-<!-- Content akan di-render setelah header dan sidebar -->
-<div class="container-fluid">
-    
-    <!-- Welcome Section -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="welcome-card bg-gradient-primary text-white rounded-3 p-4 shadow">
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <h3 class="mb-2">
-                            <i class="fas fa-hand-wave me-2"></i>
-                            Selamat Datang, <?= esc($userData['name']) ?>!
-                        </h3>
-                        <p class="mb-0 opacity-75">
-                            <?= date('l, d F Y') ?> - Selamat bekerja di Inventory System
-                        </p>
-                    </div>
-                    <div class="col-md-4 text-end">
-                        <div class="bg-white bg-opacity-25 rounded p-3 d-inline-block">
-                            <i class="fas fa-user-shield fa-2x"></i>
-                            <div class="mt-1 fw-semibold"><?= ucfirst($userData['role']) ?></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<?= $this->extend('layouts/dashboard') ?>
+
+<?= $this->section('title') ?>Dashboard<?= $this->endSection() ?>
+
+<?= $this->section('content') ?>
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+    <div class="d-none d-sm-inline-block">
+        <span class="badge bg-primary">
+            <i class="fas fa-user me-1"></i>
+            <?= session()->get('name') ?> (<?= session()->get('role') ?>)
+        </span>
+        <span class="badge bg-secondary ms-2">
+            <i class="fas fa-calendar me-1"></i>
+            <?= date('d F Y') ?>
+        </span>
     </div>
-
-    <!-- Statistics Cards -->
-    <div class="row mb-4">
-        <!-- Total Items -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-start-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs fw-bold text-primary text-uppercase mb-1">
-                                Total Items
-                            </div>
-                            <div class="h5 mb-0 fw-bold text-gray-800"><?= number_format($total_items) ?></div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-cubes fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Total Suppliers -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-start-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs fw-bold text-success text-uppercase mb-1">
-                                Total Suppliers
-                            </div>
-                            <div class="h5 mb-0 fw-bold text-gray-800"><?= number_format($total_suppliers) ?></div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-truck fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Total Customers -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-start-info shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs fw-bold text-info text-uppercase mb-1">
-                                Total Customers
-                            </div>
-                            <div class="h5 mb-0 fw-bold text-gray-800"><?= number_format($total_customers) ?></div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-users fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Low Stock Alert -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-start-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs fw-bold text-warning text-uppercase mb-1">
-                                Low Stock Items
-                            </div>
-                            <div class="h5 mb-0 fw-bold text-gray-800"><?= number_format($low_stock_count) ?></div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Purchase & Sales Overview -->
-    <div class="row mb-4">
-        <!-- Purchase Overview -->
-        <div class="col-xl-6 col-md-6 mb-4">
-            <div class="card shadow h-100">
-                <div class="card-header bg-primary text-white py-3">
-                    <h6 class="m-0 fw-bold">
-                        <i class="fas fa-shopping-cart me-2"></i>Purchase Overview
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <div class="row text-center">
-                        <div class="col-4">
-                            <div class="border-end">
-                                <div class="text-primary fw-bold h5"><?= number_format($pending_po_count) ?></div>
-                                <small class="text-muted">Pending PO</small>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="border-end">
-                                <div class="text-success fw-bold h5"><?= number_format($approved_po_count) ?></div>
-                                <small class="text-muted">Approved PO</small>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="text-info fw-bold h5"><?= $this->formatCurrency($total_po_amount) ?></div>
-                            <small class="text-muted">Total Value</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Sales Overview -->
-        <div class="col-xl-6 col-md-6 mb-4">
-            <div class="card shadow h-100">
-                <div class="card-header bg-success text-white py-3">
-                    <h6 class="m-0 fw-bold">
-                        <i class="fas fa-chart-line me-2"></i>Sales Overview
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <div class="row text-center">
-                        <div class="col-4">
-                            <div class="border-end">
-                                <div class="text-warning fw-bold h5"><?= number_format($pending_so_count) ?></div>
-                                <small class="text-muted">Pending SO</small>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="border-end">
-                                <div class="text-success fw-bold h5"><?= number_format($approved_so_count) ?></div>
-                                <small class="text-muted">Approved SO</small>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="text-info fw-bold h5"><?= $this->formatCurrency($total_so_amount) ?></div>
-                            <small class="text-muted">Total Value</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Actions & Low Stock Alert -->
-    <div class="row mb-4">
-        <!-- Quick Actions -->
-        <div class="col-lg-8 mb-4">
-            <div class="card shadow h-100">
-                <div class="card-header bg-white py-3">
-                    <h6 class="m-0 fw-bold text-primary">
-                        <i class="fas fa-bolt me-2"></i>Quick Actions
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <?php foreach ($quick_actions as $action): ?>
-                            <div class="col-md-6 mb-3">
-                                <a href="<?= base_url($action['url']) ?>" class="card action-card text-decoration-none">
-                                    <div class="card-body text-center p-3">
-                                        <div class="text-<?= $action['color'] ?> mb-2">
-                                            <i class="<?= $action['icon'] ?> fa-2x"></i>
-                                        </div>
-                                        <h6 class="card-title text-dark"><?= $action['title'] ?></h6>
-                                        <p class="card-text text-muted small"><?= $action['description'] ?></p>
-                                    </div>
-                                </a>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Low Stock Alert -->
-        <div class="col-lg-4 mb-4">
-            <div class="card shadow h-100">
-                <div class="card-header bg-warning text-dark py-3">
-                    <h6 class="m-0 fw-bold">
-                        <i class="fas fa-exclamation-triangle me-2"></i>Low Stock Alert
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <?php if (!empty($low_stock_items)): ?>
-                        <div class="list-group list-group-flush">
-                            <?php foreach (array_slice($low_stock_items, 0, 5) as $item): ?>
-                                <div class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                    <div>
-                                        <h6 class="mb-1 small"><?= esc($item['name']) ?></h6>
-                                        <small class="text-muted">Stock: <?= $item['quantity'] ?> | Min: <?= $item['min_stock'] ?></small>
-                                    </div>
-                                    <span class="badge bg-danger rounded-pill">!</span>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                        <?php if (count($low_stock_items) > 5): ?>
-                            <div class="text-center mt-2">
-                                <a href="<?= base_url('/items') ?>" class="btn btn-sm btn-outline-warning">
-                                    Lihat Semua <?= count($low_stock_items) ?> Items
-                                </a>
-                            </div>
-                        <?php endif; ?>
-                    <?php else: ?>
-                        <div class="text-center text-muted py-3">
-                            <i class="fas fa-check-circle fa-2x mb-2 text-success"></i>
-                            <p class="mb-0">Semua stok dalam kondisi aman</p>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Recent Activities -->
-    <div class="row">
-        <!-- Recent Purchases -->
-        <div class="col-lg-6 mb-4">
-            <div class="card shadow h-100">
-                <div class="card-header bg-info text-white py-3">
-                    <h6 class="m-0 fw-bold">
-                        <i class="fas fa-shopping-cart me-2"></i>Recent Purchases
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <?php if (!empty($recent_purchases)): ?>
-                        <div class="list-group list-group-flush">
-                            <?php foreach ($recent_purchases as $purchase): ?>
-                                <div class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                    <div>
-                                        <h6 class="mb-1 small"><?= esc($purchase['po_number']) ?></h6>
-                                        <small class="text-muted">Supplier: <?= esc($purchase['supplier_name']) ?></small>
-                                    </div>
-                                    <div class="text-end">
-                                        <div class="fw-bold text-success"><?= $this->formatCurrency($purchase['total_amount']) ?></div>
-                                        <small class="text-muted"><?= $this->formatDate($purchase['created_at']) ?></small>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                    <?php else: ?>
-                        <div class="text-center text-muted py-3">
-                            <i class="fas fa-info-circle fa-2x mb-2"></i>
-                            <p class="mb-0">Belum ada purchase order</p>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Sales -->
-        <div class="col-lg-6 mb-4">
-            <div class="card shadow h-100">
-                <div class="card-header bg-success text-white py-3">
-                    <h6 class="m-0 fw-bold">
-                        <i class="fas fa-chart-line me-2"></i>Recent Sales
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <?php if (!empty($recent_sales)): ?>
-                        <div class="list-group list-group-flush">
-                            <?php foreach ($recent_sales as $sale): ?>
-                                <div class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                    <div>
-                                        <h6 class="mb-1 small"><?= esc($sale['so_number']) ?></h6>
-                                        <small class="text-muted">Customer: <?= esc($sale['customer_name']) ?></small>
-                                    </div>
-                                    <div class="text-end">
-                                        <div class="fw-bold text-success"><?= $this->formatCurrency($sale['total_amount']) ?></div>
-                                        <small class="text-muted"><?= $this->formatDate($sale['created_at']) ?></small>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                    <?php else: ?>
-                        <div class="text-center text-muted py-3">
-                            <i class="fas fa-info-circle fa-2x mb-2"></i>
-                            <p class="mb-0">Belum ada sales order</p>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </div>
 
-<!-- Custom CSS untuk Dashboard -->
-<style>
-.welcome-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
+<!-- Flash Message -->
+<?php if (session()->getFlashdata('success')): ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <?= session()->getFlashdata('success') ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
 
-.action-card {
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    border: 1px solid #e3e6f0;
-}
+<!-- Statistics Cards -->
+<div class="row">
+    <!-- Total Items -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Total Items
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            <?= number_format($stats['total_items']) ?>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-boxes fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-.action-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
-}
+    <!-- Monthly Sales -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Penjualan Bulan Ini
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            Rp <?= number_format($stats['monthly_sales'], 0, ',', '.') ?>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-.card {
-    border: none;
-    border-radius: 0.5rem;
-}
+    <!-- Monthly Purchase -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            Pembelian Bulan Ini
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            Rp <?= number_format($stats['monthly_purchase'], 0, ',', '.') ?>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-.card-header {
-    border-radius: 0.5rem 0.5rem 0 0 !important;
-}
+    <!-- Pending Orders -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Order Pending
+                        </div>
+                        <div class="row no-gutters align-items-center">
+                            <div class="col-auto">
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                    <?= $stats['pending_po'] + $stats['pending_so'] ?>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="progress progress-sm mr-2">
+                                    <div class="progress-bar bg-warning" role="progressbar" 
+                                         style="width: <?= min(($stats['pending_po'] + $stats['pending_so']) * 10, 100) ?>%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-.border-start-primary { border-left: 4px solid #4e73df !important; }
-.border-start-success { border-left: 4px solid #1cc88a !important; }
-.border-start-info { border-left: 4px solid #36b9cc !important; }
-.border-start-warning { border-left: 4px solid #f6c23e !important; }
+<div class="row">
+    <!-- Chart -->
+    <div class="col-xl-8 col-lg-7">
+        <!-- Sales & Purchase Chart -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Grafik Penjualan & Pembelian Tahun <?= date('Y') ?></h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-area">
+                    <canvas id="salesPurchaseChart"></canvas>
+                </div>
+            </div>
+        </div>
 
-.list-group-item {
-    border: none;
-    padding-left: 0;
-    padding-right: 0;
-}
-</style>
+        <!-- Recent Activities -->
+<!-- Recent Activities -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Aktivitas Terbaru</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-borderless table-hover">
+                <thead>
+                    <tr>
+                        <th>Aktivitas</th>
+                        <th>Jumlah</th>
+                        <th>Status</th>
+                        <th>Waktu</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($recentActivities as $activity): ?>
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                    <i class="<?= $activity['icon'] ?> text-<?= $activity['color'] ?>"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <div class="fw-bold"><?= $activity['title'] ?></div>
+                                    <small class="text-muted"><?= $activity['description'] ?></small>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-nowrap">
+            <strong>Rp <?= number_format($activity['amount'], 0, ',', '.') ?></strong>
+</td>
+                        <td>
+                            <span class="badge bg-<?= getStatusBadgeColor($activity['status']) ?>">
+                                <?= getStatusText($activity['status']) ?>
+                            </span>
+                        </td>
+                        <td class="text-nowrap">
+                            <small class="text-muted"><?= timeAgo($activity['time']) ?></small>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+    </div>
 
-<!-- JavaScript untuk Auto Refresh Stats -->
+    <!-- Right Sidebar -->
+    <div class="col-xl-4 col-lg-5">
+        <!-- Low Stock Alert -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-danger">
+                    <i class="fas fa-exclamation-triangle me-1"></i>
+                    Stok Menipis
+                </h6>
+            </div>
+            <div class="card-body">
+                <?php if (!empty($lowStockItems)): ?>
+                    <div class="list-group list-group-flush">
+                        <?php foreach ($lowStockItems as $item): ?>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div>
+                                <div class="fw-bold"><?= $item['name'] ?></div>
+                                <small class="text-muted">Stok: <?= $item['current_stock'] ?></small>
+                            </div>
+                            <span class="badge bg-danger rounded-pill">
+                                <i class="fas fa-exclamation"></i>
+                            </span>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <div class="mt-3 text-center">
+                        <a href="<?= base_url('/items') ?>" class="btn btn-sm btn-outline-danger">
+                            Kelola Stok
+                        </a>
+                    </div>
+                <?php else: ?>
+                    <div class="text-center text-muted py-3">
+                        <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                        <p>Semua stok aman</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- Pending Orders -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-warning">
+                    <i class="fas fa-clock me-1"></i>
+                    Order Menunggu
+                </h6>
+            </div>
+            <div class="card-body">
+                <h6 class="small font-weight-bold text-primary mb-2">Purchase Orders</h6>
+                <?php foreach ($pendingOrders['purchase_orders'] as $po): ?>
+                <div class="card mb-2 border-left-primary">
+                    <div class="card-body py-2">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <div class="fw-bold"><?= $po['po_number'] ?></div>
+                                <small class="text-muted">Rp <?= number_format($po['total_amount'], 0, ',', '.') ?></small>
+                            </div>
+                            <a href="<?= base_url('/purchase-orders/view/' . $po['id']) ?>" class="btn btn-sm btn-primary">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+
+                <h6 class="small font-weight-bold text-success mb-2 mt-3">Sales Orders</h6>
+                <?php foreach ($pendingOrders['sales_orders'] as $so): ?>
+                <div class="card mb-2 border-left-success">
+                    <div class="card-body py-2">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <div class="fw-bold"><?= $so['so_number'] ?></div>
+                                <small class="text-muted">Rp <?= number_format($so['total_amount'], 0, ',', '.') ?></small>
+                            </div>
+                            <a href="<?= base_url('/sales-orders/view/' . $so['id']) ?>" class="btn btn-sm btn-success">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-info">
+                    <i class="fas fa-bolt me-1"></i>
+                    Akses Cepat
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row g-2">
+                    <div class="col-6">
+                        <a href="<?= base_url('/purchase-orders/create') ?>" class="btn btn-outline-primary w-100 h-100 py-3">
+                            <i class="fas fa-plus fa-2x mb-2"></i><br>
+                            PO Baru
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="<?= base_url('/sales-orders/create') ?>" class="btn btn-outline-success w-100 h-100 py-3">
+                            <i class="fas fa-plus fa-2x mb-2"></i><br>
+                            SO Baru
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="<?= base_url('/items/create') ?>" class="btn btn-outline-info w-100 h-100 py-3">
+                            <i class="fas fa-box fa-2x mb-2"></i><br>
+                            Item Baru
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="<?= base_url('/reports') ?>" class="btn btn-outline-warning w-100 h-100 py-3">
+                            <i class="fas fa-chart-bar fa-2x mb-2"></i><br>
+                            Laporan
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<?= $this->endSection() ?>
+
+<?= $this->section('scripts') ?>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Auto refresh stats every 60 seconds
+    // Sales & Purchase Chart
+    const ctx = document.getElementById('salesPurchaseChart').getContext('2d');
+    const salesPurchaseChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: <?= json_encode(array_column($monthlySales, 'month')) ?>,
+            datasets: [
+                {
+                    label: 'Penjualan',
+                    data: <?= json_encode(array_column($monthlySales, 'sales')) ?>,
+                    borderColor: '#1cc88a',
+                    backgroundColor: 'rgba(28, 200, 138, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                },
+                {
+                    label: 'Pembelian',
+                    data: <?= json_encode(array_column($monthlySales, 'purchases')) ?>,
+                    borderColor: '#36b9cc',
+                    backgroundColor: 'rgba(54, 185, 204, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': Rp ' + context.raw.toLocaleString('id-ID');
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return 'Rp ' + value.toLocaleString('id-ID');
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Auto refresh stats every 30 seconds
     setInterval(function() {
-        fetch('/dashboard/getDashboardStats')
+        fetch('<?= base_url('/dashboard/get-stats') ?>')
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
-                    // Update stats here if needed
-                    console.log('Stats updated', data.data);
-                }
+                // Update stats cards
+                document.querySelectorAll('.card .h5')[0].textContent = data.total_items.toLocaleString('id-ID');
+                document.querySelectorAll('.card .h5')[1].textContent = 'Rp ' + data.monthly_sales.toLocaleString('id-ID');
+                document.querySelectorAll('.card .h5')[2].textContent = 'Rp ' + data.monthly_purchase.toLocaleString('id-ID');
+                document.querySelectorAll('.card .h5')[3].textContent = (data.pending_po + data.pending_so).toString();
             })
-            .catch(error => console.error('Error updating stats:', error));
-    }, 60000);
+            .catch(error => console.error('Error refreshing stats:', error));
+    }, 30000);
 });
 </script>
+<?= $this->endSection() ?>

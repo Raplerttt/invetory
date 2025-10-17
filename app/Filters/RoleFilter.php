@@ -10,28 +10,24 @@ class RoleFilter implements FilterInterface
 {
     public function before(RequestInterface $request, $arguments = null)
     {
-        $session = \Config\Services::session();
-        
-        // First check if user is logged in
-        if (!$session->get('logged_in')) {
-            $session->set('redirect_url', current_url());
-            return redirect()->to('/login')
-                ->with('error', 'Silakan login terlebih dahulu.');
+        if (!session()->get('isLoggedIn')) {
+            session()->setFlashdata('error', 'Silakan login terlebih dahulu!');
+            return redirect()->to('/login');
         }
+
+        // Cek role
+        $userRole = session()->get('role');
         
-        // Then check role permissions
-        if (!empty($arguments)) {
-            $userRole = $session->get('role');
-            
-            if (!in_array($userRole, $arguments)) {
-                return redirect()->to('/dashboard')
-                    ->with('error', 'Anda tidak memiliki akses ke halaman tersebut.');
-            }
+        if (!empty($arguments) && !in_array($userRole, $arguments)) {
+            session()->setFlashdata('error', 'Anda tidak memiliki akses ke halaman ini!');
+            return redirect()->to('/dashboard');
         }
+
+        return $request;
     }
 
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
     {
-        // Do something here if needed
+        return $response;
     }
 }
